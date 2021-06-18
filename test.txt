@@ -1,0 +1,2 @@
+To jest przykladowy tekst.
+A to drugi.
