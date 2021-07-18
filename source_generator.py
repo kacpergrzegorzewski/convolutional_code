@@ -1,6 +1,6 @@
 import sys
 
-BMP_HEADER_LENGTH = 14  # bytes
+BMP_HEADER_LENGTH = 40  # bytes
 
 
 def get_ascii_binary(filename):
@@ -54,7 +54,14 @@ def generate_binary_source(input, output):
 
 
 if __name__ == '__main__':
-    input = sys.argv[1]
-    output = sys.argv[2]
+    try:
+        input = sys.argv[1]
+        output = sys.argv[2]
+    except Exception as e:
+        print("Expected 2 arguments but found " + str(len(sys.argv) - 1) + ".")
+        print(e)
+        input = None
+        output = None
+        exit(2)
 
     generate_binary_source(input, output)
