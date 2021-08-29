@@ -1,3 +1,6 @@
+import sys
+
+
 def read_bits(filename):
     file = open(filename, 'r')
     data = file.read()
@@ -113,10 +116,12 @@ class Decoder:
         # data should be a multiple of 3
         for i in range(1, int(len(self.data) / 3)):
             # Take 3 next bits every time
-            current_data = self.data[3*i:3*i+3]
+            current_data = self.data[3 * i:3 * i + 3]
             # temporary active states for the loop (avoiding taking later states)
             active_states = []
             active_states += self.active_states
+            if i % 1000 == 0:
+                print(str(300 * i / len(self.data))[:4] + "%")
 
             for state in active_states:
                 # input = 0
@@ -138,9 +143,6 @@ class Decoder:
         best_bits = self._find_best_bits()
         self.decoded_data += best_bits
 
-        # Last few bits are always "0" - clearing register
-        self.decoded_data = self.decoded_data[0:-9]
-
         return self.decoded_data
 
     def _decode_single_state(self, state, input, current_data):
@@ -153,7 +155,7 @@ class Decoder:
 
         if self._is_weight_lower(state, next_state, weight):
             self._set_input(self.trellis[state][0] + input, next_state)
-            self._set_weight(self.trellis[state][1]+[weight], next_state)
+            self._set_weight(self.trellis[state][1] + [weight], next_state)
             self.active_states.append(next_state)
 
     def _find_active_states(self):
@@ -166,8 +168,8 @@ class Decoder:
     # Generates array of every possible output from register input
     def generate_all_possible_output(self):
         result = []
-        for i in range(0, 2 ** (self.register_length+1)):
-            result.append(self._generate_output(bin(i)[2:].zfill(self.register_length+1)))
+        for i in range(0, 2 ** (self.register_length + 1)):
+            result.append(self._generate_output(bin(i)[2:].zfill(self.register_length + 1)))
 
         return result
 
@@ -189,7 +191,16 @@ class Decoder:
 
 
 if __name__ == '__main__':
-    data = "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000011110011010011101000001111011000101110111010101111010111011011000001001110011010111000101000101010100110001010110100010110000001011110111000111101111111111111001000101010100110001010110100010110000001011110111000111101111111111100100110010011110000001100100011011100110010011100100001010000011101010001010000110001010100000010011010001010101010010010011000000110000110110010111110001000000010000100001101000000011001010000000001101011100100011111001000101010100110001010110100010110000001011110111000111101111100001100000110110101111110010101111111010001101110111100101011011000111011101111101000001100101011100000100110000111110110110010010010001110111110010110011011101001110001101001110101000100111100111011101110100110000010001000000001101010101010010010011000000110000"
-    decoder = Decoder(data, 15)
+    try:
+        input = sys.argv[1]
+        output = sys.argv[2]
+    except Exception as e:
+        print("Expected 2 arguments but found " + str(len(sys.argv) - 1) + ".")
+        print(e)
+        input = None
+        output = None
+        exit(2)
 
-    save_data("test/decoded.txt", decoder.decode())
+    decoder = Decoder(read_bits(input), 15)
+
+    save_data(output, decoder.decode())

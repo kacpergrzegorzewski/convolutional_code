@@ -102,6 +102,7 @@ class App(Frame):
         self.output_without_coding_box = ScrolledText(self.output_without_coding_frame,
                                                       width=input_output_width,
                                                       height=input_output_height,
+                                                      state=DISABLED
                                                       )
         self.ber_without_coding_label = Label(self.output_without_coding_frame,
                                               text="BER=0"

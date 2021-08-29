@@ -4,7 +4,6 @@ BMP_HEADER_LENGTH = 40  # bytes
 
 
 def get_bytes_from_file(filename):
-    array_of_bytes = []
     with open(filename, 'r') as file:
         data = file.read()
         array_of_bytes = get_bytes(data)
