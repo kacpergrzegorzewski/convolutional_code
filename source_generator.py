@@ -1,14 +1,18 @@
 import sys
-
 BMP_HEADER_LENGTH = 40  # bytes
+
+
+def char_to_bin(data):
+    result = ""
+    for char in data:
+        result = result + bin(ord(char))[2:].zfill(8)
+    return result
 
 
 def get_ascii_binary(filename):
     with open(filename, 'r') as file:
         data = file.read()
-        result = ""
-        for char in data:
-            result = result + bin(ord(char))[2:].zfill(8)
+        result = char_to_bin(data)
     return result
 
 

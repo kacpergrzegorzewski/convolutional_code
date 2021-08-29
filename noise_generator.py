@@ -25,7 +25,7 @@ def random_true(probability):
     return False
 
 
-def make_noise(transmission_line, output, probability, number_of_bits):
+def convert_probability(probability):
     if "/" in probability:
         nominator = int(probability.split('/')[0])
         denominator = int(probability.split('/')[1])
@@ -33,10 +33,13 @@ def make_noise(transmission_line, output, probability, number_of_bits):
     elif "." in probability:
         probability = int(1 / float(probability))  # same
     else:
-        print("WRONG PROBABILITY! EXITING...")
-        exit(3)
+        raise ValueError("Wrong Probability")
+    return probability
 
-    data = read_transmission_line(transmission_line)
+
+def make_noise(data, probability, number_of_bits=None):
+    if type(probability) is str:
+        probability = convert_probability(probability)
 
     if number_of_bits is not None:
         number_of_bits = int(number_of_bits)
@@ -54,7 +57,7 @@ def make_noise(transmission_line, output, probability, number_of_bits):
             new_data = new_data + data[number_of_bits:]
             break
 
-    save_data(output, new_data)
+    return new_data
 
 
 if __name__ == '__main__':
@@ -75,4 +78,6 @@ if __name__ == '__main__':
     except:
         number_of_bits = None
 
-    make_noise(input, output, probability, number_of_bits)
+    data = read_transmission_line(input)
+    new_data = make_noise(data, probability, number_of_bits)
+    save_data(output, new_data)

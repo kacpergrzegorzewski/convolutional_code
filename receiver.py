@@ -3,21 +3,40 @@ import sys
 BMP_HEADER_LENGTH = 40  # bytes
 
 
-def get_bytes_from_transmission_line(filename):
+def get_bytes_from_file(filename):
     array_of_bytes = []
     with open(filename, 'r') as file:
         data = file.read()
-        string_byte = ""
-        i = 0
-        for bit in data:
-            string_byte = string_byte + bit
-            i = i + 1
-            if i == 8:
-                array_of_bytes.append(int(string_byte, 2))
-                string_byte = ""
-                i = 0
+        array_of_bytes = get_bytes(data)
 
     return array_of_bytes
+
+
+def get_bytes(data):
+    array_of_bytes = []
+    string_byte = ""
+    i = 0
+    for bit in data:
+        string_byte = string_byte + bit
+        i = i + 1
+        if i == 8:
+            array_of_bytes.append(int(string_byte, 2))
+            string_byte = ""
+            i = 0
+
+    return array_of_bytes
+
+
+def byte_to_char(data):
+    result = ""
+    for byte in data:
+        result += chr(byte)
+    return result
+
+
+def binary_to_string(binary):
+    bytes = get_bytes(binary)
+    return byte_to_char(bytes)
 
 
 def save_data_binary(filename, data):
@@ -46,10 +65,23 @@ def binary_to_readable_file(transmission_line, output, bmp_header_file):
             print("NO BMP HEADER FOUND. EXITING...")
             exit(3)
         data = data + get_bmp_header(bmp_header_file)
-        data = data + get_bytes_from_transmission_line(transmission_line)
+        data = data + get_bytes_from_file(transmission_line)
     elif filetype == "txt":
-        data = data + get_bytes_from_transmission_line(transmission_line)
+        data = data + get_bytes_from_file(transmission_line)
     save_data_binary(output, data)
+
+
+def count_ber(input_bits, output_bits):
+    if len(input_bits) != len(output_bits):
+        raise ValueError("Lengths are not the same!")
+    length = len(input_bits)
+    counter = 0
+    i = 0
+    for bit in input_bits:
+        if bit != output_bits[i]:
+            counter += 1
+        i += 1
+    return counter/length
 
 
 if __name__ == '__main__':
