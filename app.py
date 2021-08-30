@@ -474,5 +474,6 @@ class App(Frame):
 
 if __name__ == '__main__':
     root = Tk()
+    root.title("Convolutionalex")
     app = App(root=root)
     app.mainloop()
