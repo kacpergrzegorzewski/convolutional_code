@@ -121,7 +121,7 @@ class Decoder:
             active_states = []
             active_states += self.active_states
             if i % 1000 == 0:
-                print(str(300 * i / len(self.data))[:4] + "%")
+                print("DECODING... " + str(300 * i / len(self.data))[:4] + "%")
 
             for state in active_states:
                 # input = 0
@@ -142,6 +142,8 @@ class Decoder:
         # Add last bits without traceback depth rule
         best_bits = self._find_best_bits()
         self.decoded_data += best_bits
+
+        print("DECODING... 100% \n")
 
         return self.decoded_data
 

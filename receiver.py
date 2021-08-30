@@ -70,9 +70,14 @@ def binary_to_readable_file(transmission_line, output, bmp_header_file):
     save_data_binary(output, data)
 
 
+def bin_to_bmp(bin, output, bmp_header_file):
+    data = []
+    data += get_bmp_header(bmp_header_file)
+    data += get_bytes(bin)
+    save_data_binary(output, data)
+
+
 def count_ber(input_bits, output_bits):
-    if len(input_bits) != len(output_bits):
-        raise ValueError("Lengths are not the same!")
     length = len(input_bits)
     counter = 0
     i = 0
