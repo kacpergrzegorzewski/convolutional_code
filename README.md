@@ -1,1 +1,3 @@
-"# convolutional_code" 
+# convolutional_code
+
+Implementation of convolutional code in Python
